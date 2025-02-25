@@ -1,50 +1,4 @@
-Project Open Source untuk Kelas Next.js Batch 64 [Sanbercode](https://sanbercode.com/)
-
-## Persiapan 🚀
-
-<ul>
-<li>
-  Silahkan clone repo, selanjutnya jangan lupa buat repo di masing2 akun github untuk project ini
-</li>
-<li>
-  Kemudian jalankan perintah <code>npm install</code> or <code>yarn install</code> untuk melakukan instalasi dependencies yang diperlukan, tunggu sampai instalasi selesai
-</li>
-<li>Setelah itu silahkan jalankan perintah berikut:</li>
-</ul>
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-## Petunjuk Pengerjaan 📎
-
-<ul>
-<li>
-  Pengerjaan project menggunakan Next.js <code>Pages Router</code> + <code>Typescript</code>
-</li>
-<li>
-  Flow dalam pengumpulan hasil pengerjaannya adalah cukup mengumpulkan link repository, submit linknya melalui menu quiz di dashboard masing2
-</li>
-<li>
-  <code>NOTES:</code>project ini adalah Mini project dan akan di submit sebagai quiz pekan 3, hasil dari pengerjaan akan dipakai juga mendongkrak nilai dari <code>Final Project</code> yang masih kurang
-</li>
-<li>
-  Ada hadiah menarik bagi teman2 yang berhasil mengerjakan Mini project dengan 3 nilai teratas:
-  <ol type="1">
-    <li>🥇 GOPAY <code>150K</code> ✨</li>
-    <li>🥈 GOPAY <code>100K</code> ✨</li>
-    <li>🥉 GOPAY <code>50K</code> ✨</li>
-  </ol>
-</li>
-</ul>
-
-## Fitur yang akan dikerjakan 💻
-
-- Referensi tampilan Web ➡️ <a href="https://sanber-daily.vercel.app" target="_blank">Visit Here</a>
-- Referensi penggunaan `Middleware` di Next.js ➡️ <a href="https://github.com/pace11/sanber-daily-test" target="_blank">Repo Here</a>
-- List Features 🔥
+## ✨ Fitur Utama
 
 <table>
   <thead>
@@ -69,7 +23,7 @@ yarn dev
       </td>
       <td>5</td>
       <td>
-        <input type="checkbox" />
+        <input type="checkbox"  />
       </td>
     </tr>
     <tr>
@@ -274,9 +228,24 @@ yarn dev
 
 - Docs Swagger untuk API ➡️ <a href="https://drive.google.com/file/d/1q_A2t1dG2a9lV8McPCnMrXqfg9cWKuQ5/view?usp=sharing" target="_blank">Download Collection Postman</a>
 
-## Cara Pengerjaan dan Pengumpulan 📭
+## 📥 Instalasi dan Menjalankan Proyek
 
-- Create branch dengan prefix `feature_[nama fitur]` contoh `feature_login`
-- Kerjakan semua update di branch feature yang telah dibuat sebelumnya, jangan lupa juga update file `README.md` sebelum melakukan commit dengan cara ubah column `Status` seperti ini `<input type="checkbox" checked />` kemudian isikan nama kalian di column `Finished By`
-- Untuk pengumpulannya, silahkan open `Pull Request` di repository ini, lebih detailnya apa saja yang perlu di lakukan, bisa hubungi mentor ✅ 📞
-- Apabila pengerjaannya sesuai, PR akan di approved dan point akan kalian dapatkan 👍👍
+1. **Clone repository ini**
+
+   ```sh
+   git clone https://github.com/username/repo-name.git
+   cd repo-name
+   ```
+
+2. **Install dependencies**
+
+   ```sh
+   npm install
+   # atau
+   yarn install
+   ```
+
+3. **Jalankan proyek**
+   ```sh
+   npm run dev
+   ```
