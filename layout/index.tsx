@@ -15,9 +15,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardHeader } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Header } from '@/components/layout/Header'
-import { PageContainer } from '@/components/layout/PageContainer'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { ContentContainer } from '@/components/layout/ContentContainer'
+import { PageContainer } from '@/components/layout/PageContainer'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

@@ -7,7 +7,7 @@ export const Header = () => {
   const { setTheme } = useTheme()
 
   return (
-    <header className="h-16 border-b border-accent flex items-center justify-between p-4 gap-4">
+    <header className="h-16 border-b border-border flex items-center justify-between py-4 px-8 gap-4">
       <div>
         <h1 className="text-2xl font-bold">My App</h1>
       </div>
