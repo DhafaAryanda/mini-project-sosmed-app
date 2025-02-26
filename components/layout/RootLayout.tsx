@@ -1,23 +1,10 @@
+import { ContentContainer } from '@/components/layout/ContentContainer'
+import { Header } from '@/components/layout/Header'
+import { PageContainer } from '@/components/layout/PageContainer'
+import { Sidebar } from '@/components/layout/Sidebar'
+import { Card } from '@/components/ui/card'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Head from 'next/head'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Bell, Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { Button } from '@/components/ui/button'
-import { Card, CardHeader } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
-import { Header } from '@/components/layout/Header'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { ContentContainer } from '@/components/layout/ContentContainer'
-import { PageContainer } from '@/components/layout/PageContainer'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -61,8 +48,10 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {/* Layout untuk home */}
       <div
-        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen `}
       >
         <Header />
 

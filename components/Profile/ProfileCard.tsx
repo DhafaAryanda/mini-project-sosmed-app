@@ -13,35 +13,52 @@ export function ProfileCard() {
         <CardTitle className="text-2xl font-bold mt-3">Dhafa Aryanda</CardTitle>
       </CardHeader>
 
-      <CardContent className="mt-4 flex flex-row justify-between">
-        <div className="flex items-center gap-4 p-3 rounded-lg ">
-          <Mail className="w-5 h-5 text-primary" />
-          <div>
-            <p className="text-sm text-muted-foreground">Email</p>
+      <CardContent className="mt-4 flex flex-row w-full">
+        <div className="flex flex-col items-center gap-4 p-3 rounded-lg w-1/4 ">
+          <span className="bg-secondary p-4 rounded-full">
+            <Mail className="w-5 h-5 " />
+          </span>
+          <div className="">
+            <p className="text-sm text-muted-foreground text-nowrap text-center">
+              Email
+            </p>
             <p className="text-secondary-foreground font-medium">dhafa@maol</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 p-3 rounded-lg ">
-          <Calendar className="w-5 h-5 text-primary" />
+        <div className="flex flex-col items-center gap-4 p-3 rounded-lg w-1/4">
+          <span className="bg-secondary p-4 rounded-full">
+            <Calendar className="w-5 h-5 " />
+          </span>
           <div>
-            <p className="text-sm text-muted-foreground">Tanggal Lahir</p>
+            <p className="text-sm text-muted-foreground w-1/4 text-nowrap text-center ">
+              Tanggal Lahir
+            </p>
             <p className="text-secondary-foreground font-medium">
               02 February 2220
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4 p-3 rounded-lg ">
-          <Phone className="w-5 h-5 text-primary" />
+        <div className="flex flex-col items-center gap-4 p-3 rounded-lg w-1/4">
+          <span className="bg-secondary p-4 rounded-full">
+            <Phone className="w-5 h-5 " />
+          </span>
+
           <div>
-            <p className="text-sm text-muted-foreground">Telepon</p>
+            <p className="text-sm text-muted-foreground text-nowrap text-center">
+              Telepon
+            </p>
             <p className="text-secondary-foreground font-medium">0982382828</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 p-3 rounded-lg ">
-          <Heart className="w-5 h-5 text-primary" />
+        <div className=" flex flex-col items-center gap-4 p-3 rounded-lg w-1/4">
+          <span className="bg-secondary p-4 rounded-full">
+            <Heart className="w-5 h-5 " />
+          </span>
           <div>
-            <p className="text-sm text-muted-foreground">Hobi</p>
-            <p className="text-secondary-foreground font-medium">Berenang</p>
+            <p className="text-sm text-muted-foreground text-nowrap text-center">
+              Hobi
+            </p>
+            <p className="text-secondary-foreground font-medium">Badminton</p>
           </div>
         </div>
       </CardContent>

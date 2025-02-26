@@ -3,7 +3,11 @@ import { Button } from '../ui/button'
 import { Moon, Sun } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
-export const Header = () => {
+type HeaderProps = {
+  showAvatar?: boolean
+}
+
+export const Header = ({ showAvatar = true }: HeaderProps) => {
   const { setTheme } = useTheme()
 
   return (
@@ -38,10 +42,13 @@ export const Header = () => {
               <DropdownMenuItem>Light</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu> */}
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+
+        {showAvatar && (
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        )}
       </div>
     </header>
   )
