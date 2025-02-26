@@ -10,6 +10,12 @@ import {
 import { Button } from '../ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
 
 export function PostCard() {
   return (
@@ -27,7 +33,7 @@ export function PostCard() {
         </Avatar>
       </Link>
 
-      <div className="w-full flex flex-col gap-2 ">
+      <div className="w-full flex flex-col gap-4 ">
         <CardHeader className="flex flex-row gap-2 p-0">
           <CardTitle>Dhafa Aryanda (You)</CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
@@ -77,15 +83,22 @@ export function PostCard() {
             </Button>
           </div>
           <div className="flex w-1/2 justify-end">
-            <Button
-              variant={'ghost'}
-              onClick={(e) => {
-                e.stopPropagation()
-                console.log('Ellipsis Clicked')
-              }}
-            >
-              <Ellipsis />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={'ghost'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    console.log('Ellipsis Clicked')
+                  }}
+                >
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardFooter>
       </div>

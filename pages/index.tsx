@@ -12,6 +12,12 @@ export default function Home() {
 
         <div className="w-3/4 flex flex-col gap-4">
           <PostCard />
+          <PostCard />
+          <PostCard />
+          <PostCard />
+          <PostCard />
+          <PostCard />
+          <PostCard />
         </div>
       </div>
     </>
