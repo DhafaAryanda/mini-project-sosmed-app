@@ -56,7 +56,7 @@ export default function RootLayout({
   return (
     <>
       <Head>
-        <title>{`${metaTitle ? `${metaTitle} | ` : ''}My App`}</title>
+        <title>{`${metaTitle ? `${metaTitle} | ` : ''}Cosmed`}</title>
         <meta name="description" content="Application layout" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />

@@ -9,7 +9,7 @@ export const Sidebar = () => {
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/profile', label: 'Profile', icon: User },
-    { href: '/notification', label: 'Notifications', icon: Bell },
+    { href: '/notifications', label: 'Notifications', icon: Bell },
   ]
 
   return (

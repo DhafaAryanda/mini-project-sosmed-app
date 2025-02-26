@@ -9,7 +9,7 @@ export const Header = () => {
   return (
     <header className="h-16 border-b border-border flex items-center justify-between py-4 px-8 gap-4">
       <div>
-        <h1 className="text-2xl font-bold">My App</h1>
+        <h1 className="text-2xl font-bold">Cosmed</h1>
       </div>
       {/* <div className="w-10 h-10 rounded-full border-2 border-red-300"></div> */}
       <div className="flex items-center gap-4">
