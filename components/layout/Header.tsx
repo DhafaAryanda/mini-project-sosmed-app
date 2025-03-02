@@ -1,7 +1,16 @@
-import { useTheme } from 'next-themes'
-import { Button } from '../ui/button'
 import { Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { useRouter } from 'next/router'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Button } from '../ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu'
+import { useEffect } from 'react'
+import { postLogout } from '@/services/PostService'
 
 type HeaderProps = {
   showAvatar?: boolean
@@ -9,6 +18,22 @@ type HeaderProps = {
 
 export const Header = ({ showAvatar = true }: HeaderProps) => {
   const { setTheme } = useTheme()
+
+  // useEffect(() => {
+  //   const fetchLogout = async () => {
+  //     const data = await postLogout()
+  //     console.log('🚀 ~ fetchProfile ~ data', data)
+  //   }
+
+  //   fetchLogout()
+  // }, [])
+
+  // const handleLogout = async () => {
+  //   const data = await postLogout()
+  //   console.log('🚀 ~ fetchProfile ~ data', data)
+  // }
+
+  const router = useRouter()
 
   return (
     <header className="h-16 border-b border-border flex items-center justify-between py-4 px-8 gap-4">
@@ -44,10 +69,31 @@ export const Header = ({ showAvatar = true }: HeaderProps) => {
           </DropdownMenu> */}
 
         {showAvatar && (
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              asChild
+              className="cursor-pointer p-0 rounded-full h-fit w-fit"
+            >
+              <Button
+                variant={'ghost'}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  console.log('Ellipsis Clicked')
+                }}
+              >
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => router.push('/profile')}>
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem variant="destructive">Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
     </header>

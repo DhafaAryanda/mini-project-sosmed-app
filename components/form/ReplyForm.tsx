@@ -1,21 +1,20 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '../ui/button'
+import { replyToPost } from '@/services/PostService'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Send } from 'lucide-react'
-import { Textarea } from '../ui/textarea'
 import { useState } from 'react'
-import { createPost } from '@/services/PostService'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
+import { useRouter } from 'next/router'
 
 const FormSchema = z.object({
   description: z
@@ -24,7 +23,9 @@ const FormSchema = z.object({
     .max(160, { message: 'Post must not be longer than 160 characters.' }),
 })
 
-export function PostForm() {
+export function ReplyForm() {
+  const router = useRouter()
+  const { id } = router.query
   const [loading, setLoading] = useState(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -37,8 +38,9 @@ export function PostForm() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setLoading(true)
     try {
-      await createPost(data.description)
-      toast.success('Post created successfully!')
+      await replyToPost(Number(id), data.description)
+      toast.success('Reply created successfully!')
+
       form.reset()
     } catch (error) {
       toast.error('Failed to create post')

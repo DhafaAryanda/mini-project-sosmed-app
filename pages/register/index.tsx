@@ -11,30 +11,47 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import axiosInstance from '@/lib/axiosInstance'
+import {
+  registerFormSchema,
+  RegisterFormSchema,
+} from '@/schemas/registerSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-})
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: '',
-    },
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const router = useRouter()
+
+  const form = useForm<RegisterFormSchema>({
+    resolver: zodResolver(registerFormSchema),
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const onSubmit = async (data: RegisterFormSchema) => {
+    setIsLoading(true)
+
+    try {
+      console.log('🚀 ~ onSubmit ~ data:', data)
+
+      await axiosInstance.post('/register', data)
+      toast.success('Login Successful')
+
+      form.reset()
+
+      router.push('/login')
+    } catch (error) {
+      console.log('🚀 ~ onSubmit ~ error:', error)
+      toast.error('Login Failed')
+    } finally {
+      setIsLoading(false)
+    }
   }
   return (
     <div className="w-full h-full  flex items-center justify-center ">
@@ -58,8 +75,8 @@ export default function RegisterPage() {
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -71,8 +88,8 @@ export default function RegisterPage() {
                     <FormControl>
                       <Input type="email" {...field} />
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -84,8 +101,8 @@ export default function RegisterPage() {
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -94,11 +111,15 @@ export default function RegisterPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
+                    <FormControl className="">
+                      <Input
+                        type="date"
+                        className="w-full flex justify-between"
+                        {...field}
+                      />
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -111,8 +132,8 @@ export default function RegisterPage() {
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -132,6 +153,7 @@ export default function RegisterPage() {
                         <Button
                           type="button"
                           variant="ghost"
+                          disabled={isLoading}
                           className="absolute right-2 top-1/2 -translate-y-1/2 p-2  hover:bg-transparent "
                           onClick={() => setShowPassword(!showPassword)}
                         >
@@ -143,8 +165,8 @@ export default function RegisterPage() {
                         </Button>
                       </div>
                     </FormControl>
+                    <FormMessage className="text-xs" />
                     <FormDescription />
-                    <FormMessage />
                   </FormItem>
                 )}
               />

@@ -1,4 +1,4 @@
-import { Ellipsis, Heart, MessageCircle } from 'lucide-react'
+import { Check, Ellipsis, Heart, MessageCircle } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -16,49 +16,117 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog'
+import { Badge } from '../ui/badge'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { Textarea } from '../ui/textarea'
+import { deletePost, updatePost } from '@/services/PostService'
+import { toast } from 'sonner'
 
-export function PostCard() {
+dayjs.extend(relativeTime)
+const formatDate = (date: string) => {
+  const now = dayjs()
+  const updatedAt = dayjs(date)
+  const diffInHours = now.diff(updatedAt, 'hour')
+
+  return diffInHours >= 24
+    ? updatedAt.format('MMM D, YYYY') // Format: Apr 20, 2023
+    : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
+}
+
+type Post = {
+  id: number
+  description: string
+  user_id: number
+  deleted_at?: string
+  created_at: string
+  updated_at: string
+  likes_count: number
+  replies_count: number
+  is_like_post: boolean
+  is_own_post: boolean
+  user: User
+}
+
+type User = {
+  id: number
+  name: string
+  email: string
+}
+
+export function PostCard({ post }: { post: Post }) {
+  const router = useRouter()
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedDescription, setEditedDescription] = useState(post.description)
+
+  const handleSave = () => {
+    setIsEditing(false)
+
+    console.log('Saving:', editedDescription)
+
+    updatePost(post.id, editedDescription)
+    toast.success('Post updated successfully')
+  }
+
+  const handleDelete = () => {
+    deletePost(post.id)
+    toast.success('Post deleted successfully')
+    // console.log('Deleting:', post.id)
+  }
+
   return (
     <Card
-      className="cursor-pointer gap-4 flex flex-row px-4"
-      //   onClick={() => setIsModalOpen(true)}
+      className="cursor-pointer gap-4 flex flex-row px-4 rounded-none"
+      onClick={() => !isEditing && router.push(`/post/${post.id}`)}
     >
-      <Link href={'/profile'} className="w-fit h-fit group rounded-full">
-        <Avatar className="w-10 h-10">
-          <AvatarImage
-            src="https://github.com/shadcn.png"
-            className="transition-opacity group-hover:opacity-75"
-          />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      </Link>
+      <Avatar className="w-10 h-10">
+        <AvatarFallback>
+          {post.user.name.charAt(0).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
 
-      <div className="w-full flex flex-col gap-4 ">
-        <CardHeader className="flex flex-row gap-2 p-0">
-          <CardTitle>Dhafa Aryanda (You)</CardTitle>
+      <div className="w-full flex flex-col gap-4 px-2 ">
+        <CardHeader className="flex flex-row gap-2 p-0 ">
+          <CardTitle>{post.user.name} (You)</CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
-            <p className="text-sm">dhafa@gmail.com</p>
+            <p className="text-sm">{post.user.email}</p>
             <span>·</span>
-            <p className="text-xs">Apr 20, 2023 / 22h</p>
+            <p className="text-xs">{formatDate(post.updated_at)}</p>
           </CardDescription>
+          {post.created_at !== post.updated_at && (
+            <Badge variant="outline">Edited</Badge>
+          )}
         </CardHeader>
         <CardContent className="p-0">
-          <p>
-            Halolo ini adalah contoh desc postingan Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Fugiat laboriosam aspernatur ipsa
-            omnis, assumenda quidem ab ad corporis veniam fugit fuga possimus
-            commodi? Placeat repellendus fuga ab impedit dolore architecto,
-            distinctio dolorem quas quam repellat libero necessitatibus tenetur
-            asperiores magnam ipsum cumque iusto repudiandae. Facere fugiat, ex
-            non labore, explicabo alias quos fugit expedita voluptatum velit
-            molestiae! Modi amet voluptatem voluptatum, velit doloremque
-            doloribus dicta excepturi libero ea, nesciunt perferendis ad
-            inventore hic reprehenderit quidem nobis ipsa laudantium maxime
-            dolorum, cum quae dolor! Consectetur, maiores dolore totam suscipit
-            vero itaque atque minus temporibus aliquam perspiciatis laboriosam,
-            provident ipsa. Omnis, eveniet?
-          </p>
+          {isEditing ? (
+            <Textarea
+              // className="w-full p-2 border rounded-md"
+              value={editedDescription}
+              onChange={(e) => setEditedDescription(e.target.value)}
+              autoFocus
+            />
+          ) : (
+            <p>
+              {post.description.length > 100
+                ? post.description.slice(0, 600) + '...'
+                : post.description}
+            </p>
+          )}
         </CardContent>
+
         <CardFooter className="flex justify-between p-0 ">
           <div className="flex w-1/2 gap-8 ">
             <Button
@@ -69,7 +137,8 @@ export function PostCard() {
                 console.log('Comment Clicked')
               }}
             >
-              <MessageCircle className="w-4 h-4" /> <span>23</span>
+              <MessageCircle className="w-4 h-4" />{' '}
+              <span>{post.replies_count}</span>
             </Button>
             <Button
               variant={'ghost'}
@@ -79,26 +148,107 @@ export function PostCard() {
                 console.log('Like Clicked')
               }}
             >
-              <Heart /> <span>89</span>
+              <Heart /> <span>{post.likes_count}</span>
             </Button>
           </div>
           <div className="flex w-1/2 justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+            {isEditing ? (
+              <div className="flex gap-2">
                 <Button
                   variant={'ghost'}
                   onClick={(e) => {
                     e.stopPropagation()
-                    console.log('Ellipsis Clicked')
+                    setIsEditing(false)
+                    setEditedDescription(post.description)
                   }}
                 >
-                  <Ellipsis />
+                  Cancel
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleSave()
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      console.log('Ellipsis Clicked')
+                    }}
+                  >
+                    <Ellipsis />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onSelect={(e) => e.preventDefault()}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsEditing(true)
+                      console.log('Edit Clicked')
+                    }}
+                  >
+                    Edit
+                  </DropdownMenuItem>
+                  <div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem
+                          className="cursor-pointer"
+                          variant="destructive"
+                          onSelect={(e) => e.preventDefault()}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            console.log('Delete Clicked')
+                          }}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your account and remove your data from our
+                            servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              console.log('Cancel Clicked')
+                            }}
+                          >
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              console.log('Continue Clicked')
+                              handleDelete()
+                            }}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </CardFooter>
       </div>

@@ -1,16 +1,33 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import dayjs from 'dayjs'
 import { Calendar, Heart, Mail, Phone } from 'lucide-react'
 
-export function ProfileCard() {
+type ProfileCardProps = {
+  id: number
+  name: string
+  email: string
+  dob?: string
+  phone?: string
+  hobby?: string
+  deleted_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export function ProfileCard({ profile }: { profile: ProfileCardProps }) {
   return (
     <Card className="w-full h-fit p-6 shadow-lg rounded-2xl">
       <CardHeader className="items-center flex-col">
         <Avatar className="w-24 h-24 border-4 border-primary shadow-md">
           <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>DA</AvatarFallback>
+          <AvatarFallback>
+            {profile.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
-        <CardTitle className="text-2xl font-bold mt-3">Dhafa Aryanda</CardTitle>
+        <CardTitle className="text-2xl font-bold mt-3">
+          {profile.name}
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="mt-4 flex flex-row w-full">
@@ -22,7 +39,9 @@ export function ProfileCard() {
             <p className="text-sm text-muted-foreground text-nowrap text-center">
               Email
             </p>
-            <p className="text-secondary-foreground font-medium">dhafa@maol</p>
+            <p className="text-secondary-foreground font-medium text-center">
+              {profile.email}
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-center gap-4 p-3 rounded-lg w-1/4">
@@ -33,8 +52,8 @@ export function ProfileCard() {
             <p className="text-sm text-muted-foreground w-1/4 text-nowrap text-center ">
               Tanggal Lahir
             </p>
-            <p className="text-secondary-foreground font-medium">
-              02 February 2220
+            <p className="text-secondary-foreground font-medium text-center">
+              {profile.dob ? dayjs(profile.dob).format('DD MMMM YYYY') : 'N/A'}
             </p>
           </div>
         </div>
@@ -47,7 +66,9 @@ export function ProfileCard() {
             <p className="text-sm text-muted-foreground text-nowrap text-center">
               Telepon
             </p>
-            <p className="text-secondary-foreground font-medium">0982382828</p>
+            <p className="text-secondary-foreground font-medium text-center">
+              {profile.phone ? profile.phone : 'N/A'}
+            </p>
           </div>
         </div>
         <div className=" flex flex-col items-center gap-4 p-3 rounded-lg w-1/4">
@@ -58,7 +79,9 @@ export function ProfileCard() {
             <p className="text-sm text-muted-foreground text-nowrap text-center">
               Hobi
             </p>
-            <p className="text-secondary-foreground font-medium">Badminton</p>
+            <p className="text-secondary-foreground font-medium text-center">
+              {profile.hobby ? profile.hobby : 'N/A'}
+            </p>
           </div>
         </div>
       </CardContent>

@@ -10,37 +10,51 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import axiosInstance from '@/lib/axiosInstance'
+import { loginFormSchema, LoginFormSchema } from '@/schemas/loginSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.',
-  }),
-})
+import { toast } from 'sonner'
+import Cookies from 'js-cookie'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: '',
-    },
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const router = useRouter()
+
+  const form = useForm<LoginFormSchema>({
+    resolver: zodResolver(loginFormSchema),
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const onSubmit = async (data: LoginFormSchema) => {
+    setIsLoading(true)
+
+    try {
+      const response = await axiosInstance.post('/login', data)
+      const token = response.data.data.token
+      const expiresAt = new Date(response.data.data.expires_at)
+      console.log('🚀 ~ onSubmit ~ expiresAt:', expiresAt)
+      Cookies.set('token', token, { expires: expiresAt })
+
+      toast.success('Login Successful')
+      form.reset()
+      router.reload()
+    } catch (error) {
+      console.log('🚀 ~ onSubmit ~ error:', error)
+      toast.error('Login Failed')
+    } finally {
+      setIsLoading(false)
+    }
   }
+
   return (
     <div className="w-full h-full  flex items-center justify-center ">
       <Card className="w-1/4">
         <CardHeader className="flex flex-col items-center justify-center">
-          {/* Logo Here */}
           <h1 className="text-3xl font-bold text-primary">Welcome Back</h1>
           <p className="text-muted-foreground">Login to your account</p>
         </CardHeader>
@@ -95,7 +109,9 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button className="mt-4 w-full">Login</Button>
+              <Button disabled={isLoading} className="mt-4 w-full">
+                Login
+              </Button>
             </form>
           </Form>
 
