@@ -5,7 +5,6 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { replyToPost } from '@/services/PostService'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Send } from 'lucide-react'
 import { useState } from 'react'
@@ -15,6 +14,7 @@ import { z } from 'zod'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { useRouter } from 'next/router'
+import { replyToPost } from '@/lib/api/replies'
 
 const FormSchema = z.object({
   description: z

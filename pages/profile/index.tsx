@@ -1,21 +1,10 @@
 import { ProfileCard } from '@/components/Profile/ProfileCard'
-import { getProfile } from '@/services/PostService'
+import { getProfile } from '@/lib/api/profile'
+import { Profile } from '@/schemas/profile/profileSchema'
 import { useEffect, useState } from 'react'
 
-type ProfileCardProps = {
-  id: number
-  name: string
-  email: string
-  dob?: string
-  phone?: string
-  hobby?: string
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-}
-
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<ProfileCardProps>()
+  const [profile, setProfile] = useState<Profile>()
   useEffect(() => {
     const fetchProfile = async () => {
       const data = await getProfile()

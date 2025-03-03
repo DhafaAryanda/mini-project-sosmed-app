@@ -1,4 +1,4 @@
-import { Check, Ellipsis, Heart, MessageCircle } from 'lucide-react'
+import { Check, Ellipsis, Heart, HeartOff, MessageCircle } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -33,8 +33,9 @@ import { Badge } from '../ui/badge'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Textarea } from '../ui/textarea'
-import { deletePost, updatePost } from '@/services/PostService'
 import { toast } from 'sonner'
+import { Post } from '@/types/post'
+import { deletePost, likePost, unlikePost, updatePost } from '@/lib/api/posts'
 
 dayjs.extend(relativeTime)
 const formatDate = (date: string) => {
@@ -47,42 +48,38 @@ const formatDate = (date: string) => {
     : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
 }
 
-type Post = {
-  id: number
-  description: string
-  user_id: number
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-  likes_count: number
-  replies_count: number
-  is_like_post: boolean
-  is_own_post: boolean
-  user: User
+type PostCardProps = {
+  postData: Post
 }
 
-type User = {
-  id: number
-  name: string
-  email: string
-}
-
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ postData }: PostCardProps) {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
-  const [editedDescription, setEditedDescription] = useState(post.description)
+  const [editedDescription, setEditedDescription] = useState(
+    postData.description,
+  )
+
+  const handlelikePost = () => {
+    likePost(postData.id)
+    toast.success('Post liked successfully')
+  }
+
+  const handleUnlikePost = () => {
+    unlikePost(postData.id)
+    toast.success('Post unliked successfully')
+  }
 
   const handleSave = () => {
     setIsEditing(false)
 
     console.log('Saving:', editedDescription)
 
-    updatePost(post.id, editedDescription)
+    updatePost(postData.id, editedDescription)
     toast.success('Post updated successfully')
   }
 
   const handleDelete = () => {
-    deletePost(post.id)
+    deletePost(postData.id)
     toast.success('Post deleted successfully')
     // console.log('Deleting:', post.id)
   }
@@ -90,23 +87,23 @@ export function PostCard({ post }: { post: Post }) {
   return (
     <Card
       className="cursor-pointer gap-4 flex flex-row px-4 rounded-none"
-      onClick={() => !isEditing && router.push(`/post/${post.id}`)}
+      onClick={() => !isEditing && router.push(`/post/${postData.id}`)}
     >
       <Avatar className="w-10 h-10">
         <AvatarFallback>
-          {post.user.name.charAt(0).toUpperCase()}
+          {postData.user.name.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
 
       <div className="w-full flex flex-col gap-4 px-2 ">
         <CardHeader className="flex flex-row gap-2 p-0 ">
-          <CardTitle>{post.user.name} (You)</CardTitle>
+          <CardTitle>{postData.user.name} (You)</CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
-            <p className="text-sm">{post.user.email}</p>
+            <p className="text-sm">{postData.user.email}</p>
             <span>·</span>
-            <p className="text-xs">{formatDate(post.updated_at)}</p>
+            <p className="text-xs">{formatDate(postData.updated_at)}</p>
           </CardDescription>
-          {post.created_at !== post.updated_at && (
+          {postData.created_at !== postData.updated_at && (
             <Badge variant="outline">Edited</Badge>
           )}
         </CardHeader>
@@ -120,9 +117,9 @@ export function PostCard({ post }: { post: Post }) {
             />
           ) : (
             <p>
-              {post.description.length > 100
-                ? post.description.slice(0, 600) + '...'
-                : post.description}
+              {postData.description.length > 100
+                ? postData.description.slice(0, 600) + '...'
+                : postData.description}
             </p>
           )}
         </CardContent>
@@ -138,18 +135,34 @@ export function PostCard({ post }: { post: Post }) {
               }}
             >
               <MessageCircle className="w-4 h-4" />{' '}
-              <span>{post.replies_count}</span>
+              <span>{postData.replies_count}</span>
             </Button>
-            <Button
-              variant={'ghost'}
-              className="flex items-center gap-2 text-[13px] cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation()
-                console.log('Like Clicked')
-              }}
-            >
-              <Heart /> <span>{post.likes_count}</span>
-            </Button>
+            {postData.is_like_post ? (
+              <Button
+                variant={'ghost'}
+                className="flex items-center gap-2 text-[13px] cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleUnlikePost()
+                  console.log('Unlike Clicked')
+                }}
+              >
+                <Heart fill="#FF0000" color="#FF0000" />{' '}
+                <span className="text-[#FF0000]">{postData.likes_count}</span>
+              </Button>
+            ) : (
+              <Button
+                variant={'ghost'}
+                className="flex items-center gap-2 text-[13px] cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlelikePost()
+                  console.log('Like Clicked')
+                }}
+              >
+                <Heart /> <span>{postData.likes_count}</span>
+              </Button>
+            )}
           </div>
           <div className="flex w-1/2 justify-end">
             {isEditing ? (
@@ -159,7 +172,7 @@ export function PostCard({ post }: { post: Post }) {
                   onClick={(e) => {
                     e.stopPropagation()
                     setIsEditing(false)
-                    setEditedDescription(post.description)
+                    setEditedDescription(postData.description)
                   }}
                 >
                   Cancel

@@ -30,6 +30,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
+import { toast } from 'sonner'
+import { deleteReply } from '@/lib/api/replies'
 
 dayjs.extend(relativeTime)
 const formatDate = (date: string) => {
@@ -61,6 +63,11 @@ type Reply = {
 }
 
 export function ReplyCard({ reply }: { reply: Reply }) {
+  const handleDelete = () => {
+    deleteReply(reply.id)
+    toast.success('Reply deleted successfully')
+  }
+
   return (
     <Card
       className=" gap-4 flex flex-row px-4 rounded-none"
@@ -152,7 +159,7 @@ export function ReplyCard({ reply }: { reply: Reply }) {
                           onClick={(e) => {
                             e.stopPropagation()
                             console.log('Continue Clicked')
-                            // handleDelete()
+                            handleDelete()
                           }}
                         >
                           Continue

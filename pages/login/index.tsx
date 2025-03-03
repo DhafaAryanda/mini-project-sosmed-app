@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import axiosInstance from '@/lib/axiosInstance'
-import { loginFormSchema, LoginFormSchema } from '@/schemas/loginSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
@@ -20,6 +19,10 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import Cookies from 'js-cookie'
+import {
+  loginFormSchema,
+  LoginFormSchema,
+} from '@/schemas/auth/loginFormSchema'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)

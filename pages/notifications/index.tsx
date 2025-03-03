@@ -1,57 +1,11 @@
 import { NotificationCard } from '@/components/notifications/NotificationCard'
-import { getAllNotifications } from '@/services/PostService'
+import { getAllNotifications } from '@/lib/api/notifications'
+import { Profile } from '@/schemas/profile/profileSchema'
+import { UserNotification } from '@/types/notification'
 import { useEffect, useState } from 'react'
 
-type Notifications = {
-  id: number
-  name: string
-  email: string
-  dob: string
-  phone: string
-  hobby: string
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-}
-
-type User = {
-  id: number
-  name: string
-  email: string
-  dob?: string
-  phone?: string
-  hobby?: string
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-}
-
-type Posts = {
-  id: 306
-  description: 'halow'
-  users_id: 2
-  deleted_at: null
-  created_at: '2025-03-01T09:35:51.000000Z'
-  updated_at: '2025-03-01T09:35:51.000000Z'
-  is_like_post: false
-  is_own_post: true
-  user: User
-}
-
-type NotificationCardProps = {
-  id: number
-  remark: 'like' | 'reply'
-  read: boolean
-  created_at: string
-  updated_at: string
-  user: User
-  posts: Posts
-}
-
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<NotificationCardProps[]>(
-    [],
-  )
+  const [notifications, setNotifications] = useState<UserNotification[]>([])
   useEffect(() => {
     const fetchProfile = async () => {
       const data = await getAllNotifications()

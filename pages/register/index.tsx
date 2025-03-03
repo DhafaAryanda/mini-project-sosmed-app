@@ -15,7 +15,8 @@ import axiosInstance from '@/lib/axiosInstance'
 import {
   registerFormSchema,
   RegisterFormSchema,
-} from '@/schemas/registerSchema'
+} from '@/schemas/auth/registerFormSchema'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
@@ -23,7 +24,6 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)

@@ -1,21 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Profile } from '@/schemas/profile/profileSchema'
 import dayjs from 'dayjs'
 import { Calendar, Heart, Mail, Phone } from 'lucide-react'
 
 type ProfileCardProps = {
-  id: number
-  name: string
-  email: string
-  dob?: string
-  phone?: string
-  hobby?: string
-  deleted_at?: string
-  created_at: string
-  updated_at: string
+  profile: Profile
 }
 
-export function ProfileCard({ profile }: { profile: ProfileCardProps }) {
+export function ProfileCard({ profile }: ProfileCardProps) {
   return (
     <Card className="w-full h-fit p-6 shadow-lg rounded-2xl">
       <CardHeader className="items-center flex-col">

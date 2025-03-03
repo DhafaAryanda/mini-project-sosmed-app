@@ -1,40 +1,35 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Button } from '../ui/button'
-import { Send } from 'lucide-react'
-import { Textarea } from '../ui/textarea'
-import { useState } from 'react'
-import { createPost } from '@/services/PostService'
 
-const FormSchema = z.object({
-  description: z
-    .string()
-    .min(1, { message: 'Post must be at least 10 characters.' })
-    .max(160, { message: 'Post must not be longer than 160 characters.' }),
-})
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Send } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
+import {
+  createPostFormSchema,
+  CreatePostFormSchema,
+} from '@/schemas/posts/createPostFormSchema'
+import { createPost } from '@/lib/api/posts'
 
 export function PostForm() {
   const [loading, setLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<CreatePostFormSchema>({
+    resolver: zodResolver(createPostFormSchema),
     defaultValues: {
       description: '',
     },
   })
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: CreatePostFormSchema) {
     setLoading(true)
     try {
       await createPost(data.description)

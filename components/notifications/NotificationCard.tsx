@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { UserNotification } from '@/types/notification'
 
 dayjs.extend(relativeTime)
 const formatDate = (date: string) => {
@@ -15,45 +16,11 @@ const formatDate = (date: string) => {
     : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
 }
 
-type User = {
-  id: number
-  name: string
-  email: string
-  dob?: string
-  phone?: string
-  hobby?: string
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-}
-
-type Posts = {
-  id: 306
-  description: 'halow'
-  users_id: 2
-  deleted_at: null
-  created_at: '2025-03-01T09:35:51.000000Z'
-  updated_at: '2025-03-01T09:35:51.000000Z'
-  is_like_post: false
-  is_own_post: true
-  user: User
-}
-
 type NotificationCardProps = {
-  id: number
-  remark: 'like' | 'reply'
-  read: boolean
-  created_at: string
-  updated_at: string
-  user: User
-  posts: Posts
+  notification: UserNotification
 }
 
-export function NotificationCard({
-  notification,
-}: {
-  notification: NotificationCardProps
-}) {
+export function NotificationCard({ notification }: NotificationCardProps) {
   return (
     <Link
       href={`/post/${notification.posts.id}`}
