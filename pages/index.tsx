@@ -1,32 +1,31 @@
 import { PostForm } from '@/components/form/PostForm'
 import { PostCard } from '@/components/post/PostCard'
 import { getAllPosts } from '@/lib/api/posts'
-import { CreatePostFormSchema } from '@/schemas/posts/createPostFormSchema'
-
-import { Post } from '@/types/post'
-import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 export default function Home() {
-  const [posts, setPosts] = useState<Post[]>([])
-  console.log('🚀 ~ Home ~ posts:', posts)
+  const {
+    data: posts,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR('/posts', getAllPosts)
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const data = await getAllPosts()
-      setPosts(data)
-    }
-
-    fetchPosts()
-  }, [])
+  if (isLoading)
+    return <p className="text-center text-gray-500">Loading posts...</p>
+  if (error)
+    return <p className="text-center text-red-500">Failed to load posts</p>
 
   return (
     <>
       <div className="w-full h-full flex flex-col items-center   ">
         <div className="w-3/4 flex flex-col gap-2">
-          <PostForm />
+          <PostForm mutate={mutate} />
 
           {posts.length > 0 ? (
-            posts.map((post) => <PostCard key={post.id} postData={post} />)
+            posts.map((post: any) => (
+              <PostCard key={post.id} postData={post} mutate={mutate} />
+            ))
           ) : (
             <p className="text-center text-gray-500">No posts available</p>
           )}

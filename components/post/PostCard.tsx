@@ -1,4 +1,4 @@
-import { Check, Ellipsis, Heart, HeartOff, MessageCircle } from 'lucide-react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   Card,
   CardContent,
@@ -7,81 +7,87 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Button } from '../ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Link from 'next/link'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../ui/alert-dialog'
-import { Badge } from '../ui/badge'
+import { deletePost, likePost, unlikePost, updatePost } from '@/lib/api/posts'
+import { Post } from '@/types/post'
+import { MessageCircle } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { Textarea } from '../ui/textarea'
 import { toast } from 'sonner'
-import { Post } from '@/types/post'
-import { deletePost, likePost, unlikePost, updatePost } from '@/lib/api/posts'
-
-dayjs.extend(relativeTime)
-const formatDate = (date: string) => {
-  const now = dayjs()
-  const updatedAt = dayjs(date)
-  const diffInHours = now.diff(updatedAt, 'hour')
-
-  return diffInHours >= 24
-    ? updatedAt.format('MMM D, YYYY') // Format: Apr 20, 2023
-    : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
-}
+import { ActionMenu } from '../common/ActionMenu'
+import { LikeButton } from '../common/LikeButton'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
+import { formatDate } from '@/utils/date'
 
 type PostCardProps = {
   postData: Post
+  // mutate: () => void
+  mutate: (data?: any, shouldRevalidate?: boolean) => Promise<any>
 }
 
-export function PostCard({ postData }: PostCardProps) {
+export function PostCard({ postData, mutate }: PostCardProps) {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [editedDescription, setEditedDescription] = useState(
     postData.description,
   )
 
-  const handlelikePost = () => {
-    likePost(postData.id)
-    toast.success('Post liked successfully')
+  // const handleLikeToggle = async () => {
+  //   if (postData.is_like_post) {
+  //     await unlikePost(postData.id)
+  //     toast.success('Post unliked successfully')
+  //   } else {
+  //     await likePost(postData.id)
+  //     toast.success('Post liked successfully')
+  //   }
+  //   mutate()
+  // }
+
+  const handleLikeToggle = async () => {
+    const optimisticData = {
+      ...postData,
+      is_like_post: !postData.is_like_post,
+      likes_count: postData.is_like_post
+        ? postData.likes_count - 1
+        : postData.likes_count + 1,
+    }
+
+    // Update UI secara langsung
+    mutate(
+      (posts: Post[]) =>
+        posts.map((post) => (post.id === postData.id ? optimisticData : post)),
+      false, // Tidak langsung fetch ulang
+    )
+
+    try {
+      if (postData.is_like_post) {
+        await unlikePost(postData.id)
+        toast.success('Post unliked successfully')
+      } else {
+        await likePost(postData.id)
+        toast.success('Post liked successfully')
+      }
+
+      // **Re-fetch data dari server untuk memastikan data tetap akurat**
+      mutate()
+    } catch (error) {
+      toast.error('Failed to update like status')
+      mutate() // Jika gagal, revert ke data asli dari server
+    }
   }
 
-  const handleUnlikePost = () => {
-    unlikePost(postData.id)
-    toast.success('Post unliked successfully')
-  }
-
-  const handleSave = () => {
+  const handleSave = async (description: string) => {
     setIsEditing(false)
-
-    console.log('Saving:', editedDescription)
-
-    updatePost(postData.id, editedDescription)
+    await updatePost(postData.id, description)
     toast.success('Post updated successfully')
+    mutate()
   }
 
-  const handleDelete = () => {
-    deletePost(postData.id)
+  const handleDelete = async () => {
+    await deletePost(postData.id)
     toast.success('Post deleted successfully')
-    // console.log('Deleting:', post.id)
+    mutate()
   }
 
   return (
@@ -137,32 +143,12 @@ export function PostCard({ postData }: PostCardProps) {
               <MessageCircle className="w-4 h-4" />{' '}
               <span>{postData.replies_count}</span>
             </Button>
-            {postData.is_like_post ? (
-              <Button
-                variant={'ghost'}
-                className="flex items-center gap-2 text-[13px] cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleUnlikePost()
-                  console.log('Unlike Clicked')
-                }}
-              >
-                <Heart fill="#FF0000" color="#FF0000" />{' '}
-                <span className="text-[#FF0000]">{postData.likes_count}</span>
-              </Button>
-            ) : (
-              <Button
-                variant={'ghost'}
-                className="flex items-center gap-2 text-[13px] cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handlelikePost()
-                  console.log('Like Clicked')
-                }}
-              >
-                <Heart /> <span>{postData.likes_count}</span>
-              </Button>
-            )}
+
+            <LikeButton
+              isLiked={postData.is_like_post}
+              likesCount={postData.likes_count}
+              onToggleLike={handleLikeToggle}
+            />
           </div>
           <div className="flex w-1/2 justify-end">
             {isEditing ? (
@@ -180,87 +166,17 @@ export function PostCard({ postData }: PostCardProps) {
                 <Button
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleSave()
+                    handleSave(editedDescription)
                   }}
                 >
                   Save
                 </Button>
               </div>
             ) : (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      console.log('Ellipsis Clicked')
-                    }}
-                  >
-                    <Ellipsis />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onSelect={(e) => e.preventDefault()}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsEditing(true)
-                      console.log('Edit Clicked')
-                    }}
-                  >
-                    Edit
-                  </DropdownMenuItem>
-                  <div>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
-                          className="cursor-pointer"
-                          variant="destructive"
-                          onSelect={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            console.log('Delete Clicked')
-                          }}
-                        >
-                          Delete
-                        </DropdownMenuItem>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete your account and remove your data from our
-                            servers.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              console.log('Cancel Clicked')
-                            }}
-                          >
-                            Cancel
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              console.log('Continue Clicked')
-                              handleDelete()
-                            }}
-                          >
-                            Continue
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ActionMenu
+                onDelete={handleDelete}
+                onEdit={() => setIsEditing(true)}
+              />
             )}
           </div>
         </CardFooter>

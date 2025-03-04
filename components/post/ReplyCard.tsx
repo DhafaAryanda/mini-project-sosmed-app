@@ -7,8 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
 import {
@@ -32,17 +31,7 @@ import {
 } from '../ui/alert-dialog'
 import { toast } from 'sonner'
 import { deleteReply } from '@/lib/api/replies'
-
-dayjs.extend(relativeTime)
-const formatDate = (date: string) => {
-  const now = dayjs()
-  const updatedAt = dayjs(date)
-  const diffInHours = now.diff(updatedAt, 'hour')
-
-  return diffInHours >= 24
-    ? updatedAt.format('MMM D, YYYY') // Format: Apr 20, 2023
-    : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
-}
+import { formatDate } from '@/utils/date'
 
 type User = {
   id: number

@@ -19,7 +19,7 @@ import {
 } from '@/schemas/posts/createPostFormSchema'
 import { createPost } from '@/lib/api/posts'
 
-export function PostForm() {
+export function PostForm({ mutate }: { mutate: () => void }) {
   const [loading, setLoading] = useState(false)
 
   const form = useForm<CreatePostFormSchema>({
@@ -35,6 +35,7 @@ export function PostForm() {
       await createPost(data.description)
       toast.success('Post created successfully!')
       form.reset()
+      mutate()
     } catch (error) {
       toast.error('Failed to create post')
     } finally {
