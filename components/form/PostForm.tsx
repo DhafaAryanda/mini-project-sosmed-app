@@ -35,7 +35,7 @@ export function PostForm({ mutate }: { mutate: () => void }) {
       await createPost(data.description)
       toast.success('Post created successfully!')
       form.reset()
-      mutate()
+      await mutate()
     } catch (error) {
       toast.error('Failed to create post')
     } finally {
@@ -72,7 +72,6 @@ export function PostForm({ mutate }: { mutate: () => void }) {
         <div className="w-fit flex justify-center items-center absolute bottom-5 -right-16">
           <Button
             className="rounded-full flex items-center justify-center p-2"
-            onClick={form.handleSubmit(onSubmit)}
             type="submit"
             disabled={loading}
           >

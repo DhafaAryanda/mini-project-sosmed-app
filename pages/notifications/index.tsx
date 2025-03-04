@@ -3,21 +3,26 @@ import { getAllNotifications } from '@/lib/api/notifications'
 import { Profile } from '@/schemas/profile/profileSchema'
 import { UserNotification } from '@/types/notification'
 import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<UserNotification[]>([])
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const data = await getAllNotifications()
-      setNotifications(data)
-    }
+  const {
+    data: notifications,
+    error,
+    isLoading,
+  } = useSWR('/notifications', getAllNotifications)
 
-    fetchProfile()
-  }, [])
+  if (isLoading)
+    return <p className="text-center text-gray-500">Loading notifications...</p>
+  if (error)
+    return (
+      <p className="text-center text-red-500">Failed to load notifications</p>
+    )
+
   return (
     <div className="w-full h-full flex flex-col gap-10">
       {notifications.length > 0 ? (
-        notifications.map((notification) => (
+        notifications.map((notification: UserNotification) => (
           <NotificationCard notification={notification} />
         ))
       ) : (

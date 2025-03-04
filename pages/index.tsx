@@ -1,6 +1,7 @@
 import { PostForm } from '@/components/form/PostForm'
 import { PostCard } from '@/components/post/PostCard'
 import { getAllPosts } from '@/lib/api/posts'
+import { Post } from '@/types/post'
 import useSWR from 'swr'
 
 export default function Home() {
@@ -23,7 +24,7 @@ export default function Home() {
           <PostForm mutate={mutate} />
 
           {posts.length > 0 ? (
-            posts.map((post: any) => (
+            posts.map((post: Post) => (
               <PostCard key={post.id} postData={post} mutate={mutate} />
             ))
           ) : (

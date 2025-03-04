@@ -11,7 +11,7 @@ import { deletePost, likePost, unlikePost, updatePost } from '@/lib/api/posts'
 import { Post } from '@/types/post'
 import { MessageCircle } from 'lucide-react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ActionMenu } from '../common/ActionMenu'
 import { LikeButton } from '../common/LikeButton'
@@ -19,11 +19,11 @@ import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { formatDate } from '@/utils/date'
+import { KeyedMutator } from 'swr'
 
 type PostCardProps = {
   postData: Post
-  // mutate: () => void
-  mutate: (data?: any, shouldRevalidate?: boolean) => Promise<any>
+  mutate: KeyedMutator<Post[]>
 }
 
 export function PostCard({ postData, mutate }: PostCardProps) {
@@ -32,19 +32,11 @@ export function PostCard({ postData, mutate }: PostCardProps) {
   const [editedDescription, setEditedDescription] = useState(
     postData.description,
   )
-
-  // const handleLikeToggle = async () => {
-  //   if (postData.is_like_post) {
-  //     await unlikePost(postData.id)
-  //     toast.success('Post unliked successfully')
-  //   } else {
-  //     await likePost(postData.id)
-  //     toast.success('Post liked successfully')
-  //   }
-  //   mutate()
-  // }
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleLikeToggle = async () => {
+    const prevPostData = { ...postData }
+
     const optimisticData = {
       ...postData,
       is_like_post: !postData.is_like_post,
@@ -53,11 +45,16 @@ export function PostCard({ postData, mutate }: PostCardProps) {
         : postData.likes_count + 1,
     }
 
-    // Update UI secara langsung
+    // Update UI secara langsung dengan pengecekan undefined
     mutate(
-      (posts: Post[]) =>
-        posts.map((post) => (post.id === postData.id ? optimisticData : post)),
-      false, // Tidak langsung fetch ulang
+      (currentData) => {
+        if (!currentData) return currentData
+
+        return currentData?.map((post) =>
+          post.id === postData.id ? optimisticData : post,
+        )
+      },
+      { revalidate: false },
     )
 
     try {
@@ -70,24 +67,77 @@ export function PostCard({ postData, mutate }: PostCardProps) {
       }
 
       // **Re-fetch data dari server untuk memastikan data tetap akurat**
-      mutate()
     } catch (error) {
       toast.error('Failed to update like status')
-      mutate() // Jika gagal, revert ke data asli dari server
+
+      mutate(
+        (currentData) => {
+          if (!currentData) return currentData
+          return currentData.map((post) =>
+            post.id === postData.id ? prevPostData : post,
+          )
+        },
+        { revalidate: false },
+      )
     }
   }
 
   const handleSave = async (description: string) => {
     setIsEditing(false)
-    await updatePost(postData.id, description)
-    toast.success('Post updated successfully')
-    mutate()
+    const prevPostData = { ...postData }
+    const optimisticData = { ...postData, description }
+
+    // Update UI secara langsung
+    mutate(
+      (currentData) => {
+        if (!currentData) return currentData
+        return currentData.map((post) =>
+          post.id === postData.id ? optimisticData : post,
+        )
+      },
+      { revalidate: false },
+    )
+
+    try {
+      await updatePost(postData.id, description)
+      toast.success('Post updated successfully')
+    } catch (error) {
+      toast.error('Failed to update post')
+      mutate(
+        (currentData) => {
+          if (!currentData) return currentData
+          return currentData.map((post) =>
+            post.id === postData.id ? prevPostData : post,
+          )
+        },
+        { revalidate: false },
+      )
+    }
   }
 
   const handleDelete = async () => {
-    await deletePost(postData.id)
-    toast.success('Post deleted successfully')
-    mutate()
+    const prevPostData = { ...postData }
+
+    mutate(
+      (currentData) => {
+        if (!currentData) return currentData
+        return currentData.filter((post) => post.id !== postData.id)
+      },
+      { revalidate: false },
+    )
+
+    try {
+      await deletePost(postData.id)
+      toast.success('Post deleted successfully')
+    } catch (error) {
+      console.log('🚀 ~ handleDelete ~ error:', error)
+      toast.error('Failed to delete post')
+
+      mutate((currentData) => {
+        if (!currentData) return currentData
+        return [...currentData, prevPostData]
+      })
+    }
   }
 
   return (
@@ -116,7 +166,11 @@ export function PostCard({ postData, mutate }: PostCardProps) {
         <CardContent className="p-0">
           {isEditing ? (
             <Textarea
-              // className="w-full p-2 border rounded-md"
+              ref={textareaRef}
+              onFocus={(e) => {
+                const length = e.target.value.length
+                e.target.setSelectionRange(length, length)
+              }}
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
               autoFocus

@@ -15,33 +15,30 @@ import { Button } from '../ui/button'
 import { Textarea } from '../ui/textarea'
 import { useRouter } from 'next/router'
 import { replyToPost } from '@/lib/api/replies'
+import {
+  createReplyFormSchema,
+  CreateReplyFormSchema,
+} from '@/schemas/posts/createReplyFormSchema'
 
-const FormSchema = z.object({
-  description: z
-    .string()
-    .min(1, { message: 'Post must be at least 10 characters.' })
-    .max(160, { message: 'Post must not be longer than 160 characters.' }),
-})
-
-export function ReplyForm() {
+export function ReplyForm({ mutate }: { mutate: () => void }) {
   const router = useRouter()
   const { id } = router.query
   const [loading, setLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<CreateReplyFormSchema>({
+    resolver: zodResolver(createReplyFormSchema),
     defaultValues: {
       description: '',
     },
   })
 
-  async function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: CreateReplyFormSchema) {
     setLoading(true)
     try {
       await replyToPost(Number(id), data.description)
       toast.success('Reply created successfully!')
-
       form.reset()
+      await mutate()
     } catch (error) {
       toast.error('Failed to create post')
     } finally {
