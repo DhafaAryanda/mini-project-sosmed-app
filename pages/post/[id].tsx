@@ -1,13 +1,11 @@
 import { ReplyForm } from '@/components/form/ReplyForm'
-import { PostCard } from '@/components/post/PostCard'
+import { PostDetailCard } from '@/components/post/PostDetailCard'
 import { ReplyCard } from '@/components/post/ReplyCard'
 import { getPostById } from '@/lib/api/posts'
 import { getRepliesByPostId } from '@/lib/api/replies'
 
-import { Post } from '@/types/post'
 import { Reply } from '@/types/reply'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 export default function PostPage() {
@@ -39,19 +37,22 @@ export default function PostPage() {
           {isPostLoading ? (
             <p className="text-center text-gray-500">Loading post...</p>
           ) : post ? (
-            <PostCard key={post.id} postData={post} mutate={mutatePost} />
+            <PostDetailCard key={post.id} postData={post} mutate={mutatePost} />
           ) : (
             <p className="text-center text-red-500">Failed to load post</p>
           )}
 
           <ReplyForm mutate={mutateReplies} />
 
-          {/* Render replies jika tersedia */}
           {isRepliesLoading ? (
             <p className="text-center text-gray-500">Loading replies...</p>
           ) : replies && replies.length > 0 ? (
             replies.map((reply: Reply) => (
-              <ReplyCard key={reply.id} reply={reply} />
+              <ReplyCard
+                key={reply.id}
+                replyData={reply}
+                mutate={mutateReplies}
+              />
             ))
           ) : (
             <p className="text-center text-gray-500">No replies available</p>

@@ -28,40 +28,45 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+import { Reply } from '@/types/reply'
+import { KeyedMutator } from 'swr'
 
-type User = {
-  id: number
-  name: string
-  email: string
+type ReplyCardProps = {
+  replyData: Reply
+  mutate: KeyedMutator<Reply[]>
 }
 
-type Reply = {
-  id: number
-  description: string
-  posts_id: number
-  users_id: number
-  deleted_at?: string
-  created_at: string
-  updated_at: string
-  is_own_reply: boolean
-  user: User
-}
+export function ReplyCard({ replyData, mutate }: ReplyCardProps) {
+  const handleDelete = async () => {
+    const prevReplyData = { ...replyData }
 
-export function ReplyCard({ reply }: { reply: Reply }) {
-  const handleDelete = () => {
-    deleteReply(reply.id)
-    toast.success('Reply deleted successfully')
+    mutate(
+      (currentData) => {
+        if (!currentData) return currentData
+        return currentData.filter((reply) => reply.id !== replyData.id)
+      },
+      { revalidate: false },
+    )
+
+    try {
+      await deleteReply(replyData.id)
+      toast.success('Reply deleted successfully')
+    } catch (error) {
+      toast.error('Failed to delete reply')
+
+      mutate((currentData) => {
+        if (!currentData) return currentData
+        return [...currentData, prevReplyData]
+      })
+    }
   }
 
   return (
-    <Card
-      className=" gap-4 flex flex-row px-4 rounded-none"
-      //   onClick={() => setIsModalOpen(true)}
-    >
+    <Card className=" gap-4 flex flex-row px-4 rounded-none">
       <div className="w-fit h-fit group rounded-full">
         <Avatar className="w-10 h-10">
           <AvatarFallback>
-            {reply.user.name.charAt(0).toUpperCase()}
+            {replyData.user.name.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </div>
@@ -69,18 +74,18 @@ export function ReplyCard({ reply }: { reply: Reply }) {
       <div className="w-full flex flex-col gap-4 px-2 ">
         <CardHeader className="flex flex-row gap-2 p-0">
           <CardTitle className="flex gap-2 items-center">
-            {reply.user.name}
-            {reply.is_own_reply && <span className="">(You)</span>}
+            {replyData.user.name}
+            {replyData.is_own_reply && <span className="">(You)</span>}
           </CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
-            <p className="text-sm">{reply.user.email}</p>
+            <p className="text-sm">{replyData.user.email}</p>
             <span>·</span>
-            <p className="text-xs">{formatDate(reply.updated_at)}</p>
+            <p className="text-xs">{formatDate(replyData.updated_at)}</p>
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           <p className="flex justify-between">
-            {reply.description}{' '}
+            {replyData.description}{' '}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

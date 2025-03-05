@@ -66,7 +66,7 @@ export function ReplyForm({ mutate }: { mutate: () => void }) {
                   />
                 </FormControl>
                 <div className="flex justify-between">
-                  <FormMessage className="text-xs" />
+                  <FormMessage className="text-xs mb-2" />
                 </div>
               </FormItem>
             )}

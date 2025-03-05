@@ -25,9 +25,11 @@ export const Sidebar = () => {
                 }`}
               >
                 <Icon
+                  stroke={pathname === href ? 'currentColor' : 'gray'}
                   strokeWidth={pathname === href ? 2 : 1}
                   className="min-h-7 min-w-7 shrink-0"
                 />
+
                 <span className="flex-1 text-start">{label}</span>
               </Button>
             </Link>
