@@ -75,7 +75,11 @@ export function ReplyCard({ replyData, mutate }: ReplyCardProps) {
         <CardHeader className="flex flex-row gap-2 p-0">
           <CardTitle className="flex gap-2 items-center">
             {replyData.user.name}
-            {replyData.is_own_reply && <span className="">(You)</span>}
+            {replyData.is_own_reply && (
+              <span className="text-sm dark:text-zinc-300 text-zinc-600">
+                (You)
+              </span>
+            )}
           </CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
             <p className="text-sm">{replyData.user.email}</p>
@@ -84,33 +88,22 @@ export function ReplyCard({ replyData, mutate }: ReplyCardProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          <p className="flex justify-between">
-            {replyData.description}{' '}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    console.log('Ellipsis Clicked')
-                  }}
-                >
-                  <Ellipsis />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onSelect={(e) => e.preventDefault()}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    // setIsEditing(true)
-                    console.log('Edit Clicked')
-                  }}
-                >
-                  Edit
-                </DropdownMenuItem>
-                <div>
+          <div className="flex justify-between ">
+            <p>{replyData.description} </p>
+            {replyData.is_own_reply && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      console.log('Ellipsis Clicked')
+                    }}
+                  >
+                    <Ellipsis />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <DropdownMenuItem
@@ -157,10 +150,10 @@ export function ReplyCard({ replyData, mutate }: ReplyCardProps) {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </p>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </CardContent>
       </div>
     </Card>

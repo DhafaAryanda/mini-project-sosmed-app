@@ -153,7 +153,14 @@ export function PostCard({ postData, mutate }: PostCardProps) {
 
       <div className="w-full flex flex-col gap-4 px-2 ">
         <CardHeader className="flex flex-row gap-2 p-0 ">
-          <CardTitle>{postData.user.name} (You)</CardTitle>
+          <CardTitle className="flex gap-2 items-center">
+            {postData.user.name}
+            {postData.is_own_post && (
+              <span className="text-sm dark:text-zinc-300 text-zinc-600">
+                (You)
+              </span>
+            )}
+          </CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
             <p className="text-sm">{postData.user.email}</p>
             <span>·</span>
@@ -204,35 +211,37 @@ export function PostCard({ postData, mutate }: PostCardProps) {
               onToggleLike={handleLikeToggle}
             />
           </div>
-          <div className="flex w-1/2 justify-end">
-            {isEditing ? (
-              <div className="flex gap-2">
-                <Button
-                  variant={'ghost'}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setIsEditing(false)
-                    setEditedDescription(postData.description)
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleSave(editedDescription)
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            ) : (
-              <ActionMenu
-                onDelete={handleDelete}
-                onEdit={() => setIsEditing(true)}
-              />
-            )}
-          </div>
+          {postData.is_own_post && (
+            <div className="flex w-1/2 justify-end">
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <Button
+                    variant={'ghost'}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsEditing(false)
+                      setEditedDescription(postData.description)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSave(editedDescription)
+                    }}
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <ActionMenu
+                  onDelete={handleDelete}
+                  onEdit={() => setIsEditing(true)}
+                />
+              )}
+            </div>
+          )}
         </CardFooter>
       </div>
     </Card>

@@ -35,17 +35,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleLikeToggle = async () => {
-    const prevPostData = { ...postData }
-
-    // const optimisticData = {
-    //   ...postData,
-    //   is_like_post: !postData.is_like_post,
-    //   likes_count: postData.is_like_post
-    //     ? postData.likes_count - 1
-    //     : postData.likes_count + 1,
-    // }
-
-    // Update UI secara langsung dengan pengecekan undefined
     mutate(
       (currentData) => {
         if (!currentData) return currentData
@@ -56,10 +45,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
             ? postData.likes_count - 1
             : postData.likes_count + 1,
         }
-
-        // return currentData?.map((post) =>
-        //   post.id === postData.id ? optimisticData : post,
-        // )
       },
       { revalidate: false },
     )
@@ -72,8 +57,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
         await likePost(postData.id)
         toast.success('Post liked successfully')
       }
-
-      // **Re-fetch data dari server untuk memastikan data tetap akurat**
     } catch (error) {
       toast.error('Failed to update like status')
 
@@ -98,7 +81,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
     const prevPostData = { ...postData }
     const optimisticData = { ...postData, description }
 
-    // Update UI secara langsung
     mutate(
       (currentData) => {
         if (!currentData) return currentData
@@ -135,7 +117,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
       console.log('🚀 ~ handleDelete ~ error:', error)
       toast.error('Failed to delete post')
 
-      // Rollback data jika gagal
       mutate(prevPostData, { revalidate: false })
     }
   }
@@ -153,7 +134,14 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
 
       <div className="w-full flex flex-col gap-4 px-2 ">
         <CardHeader className="flex flex-row gap-2 p-0 ">
-          <CardTitle>{postData.user.name} (You)</CardTitle>
+          <CardTitle className="flex gap-2 items-center">
+            {postData.user.name}
+            {postData.is_own_post && (
+              <span className="text-sm dark:text-zinc-300 text-zinc-600">
+                (You)
+              </span>
+            )}
+          </CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">
             <p className="text-sm">{postData.user.email}</p>
             <span>·</span>
@@ -204,35 +192,37 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
               onToggleLike={handleLikeToggle}
             />
           </div>
-          <div className="flex w-1/2 justify-end">
-            {isEditing ? (
-              <div className="flex gap-2">
-                <Button
-                  variant={'ghost'}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setIsEditing(false)
-                    setEditedDescription(postData.description)
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleSave(editedDescription)
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            ) : (
-              <ActionMenu
-                onDelete={handleDelete}
-                onEdit={() => setIsEditing(true)}
-              />
-            )}
-          </div>
+          {postData.is_own_post && (
+            <div className="flex w-1/2 justify-end ">
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <Button
+                    variant={'ghost'}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsEditing(false)
+                      setEditedDescription(postData.description)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleSave(editedDescription)
+                    }}
+                  >
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <ActionMenu
+                  onDelete={handleDelete}
+                  onEdit={() => setIsEditing(true)}
+                />
+              )}
+            </div>
+          )}
         </CardFooter>
       </div>
     </Card>
