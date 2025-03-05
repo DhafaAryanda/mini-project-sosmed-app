@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Profile } from '@/schemas/profile/profileSchema'
 import dayjs from 'dayjs'
@@ -13,7 +13,7 @@ export function ProfileCard({ profile }: ProfileCardProps) {
     <Card className="w-full h-fit p-6 shadow-lg rounded-2xl">
       <CardHeader className="items-center flex-col">
         <Avatar className="w-24 h-24 border-4 border-primary shadow-md">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          {/* <AvatarImage src="https://api.dicebear.com/9.x/glass/svg?seed=Liliana" /> */}
           <AvatarFallback>
             {profile.name.charAt(0).toUpperCase()}
           </AvatarFallback>

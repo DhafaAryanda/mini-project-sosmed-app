@@ -1,9 +1,9 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import dayjs from 'dayjs'
-import Link from 'next/link'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { UserNotification } from '@/types/notification'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import Link from 'next/link'
 
 dayjs.extend(relativeTime)
 const formatDate = (date: string) => {
@@ -12,8 +12,8 @@ const formatDate = (date: string) => {
   const diffInHours = now.diff(updatedAt, 'hour')
 
   return diffInHours >= 24
-    ? updatedAt.format('MMM D, YYYY') // Format: Apr 20, 2023
-    : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
+    ? updatedAt.format('MMM D, YYYY')
+    : updatedAt.fromNow()
 }
 
 type NotificationCardProps = {

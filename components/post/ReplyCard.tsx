@@ -52,6 +52,7 @@ export function ReplyCard({ replyData, mutate }: ReplyCardProps) {
       await deleteReply(replyData.id)
       toast.success('Reply deleted successfully')
     } catch (error) {
+      console.log('🚀 ~ handleDelete ~ error:', error)
       toast.error('Failed to delete reply')
 
       mutate((currentData) => {

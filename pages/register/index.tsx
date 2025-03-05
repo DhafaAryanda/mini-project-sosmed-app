@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { register } from '@/lib/api/auth'
+import { useRegister } from '@/hooks/useRegister'
 import {
   registerFormSchema,
   RegisterFormSchema,
@@ -19,15 +19,12 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const router = useRouter()
+  const { handleRegister, isLoading } = useRegister()
 
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
@@ -35,28 +32,13 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (data: RegisterFormSchema) => {
-    if (isLoading) return
-    setIsLoading(true)
-
-    try {
-      const response = await register(data)
-      toast.success('Account Created Successfully')
-      form.reset()
-      router.push('/login')
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      }
-    } finally {
-      setIsLoading(false)
-    }
+    handleRegister(data, form.reset)
   }
 
   return (
     <div className="w-full h-full  flex items-center justify-center ">
       <Card className="w-1/4">
         <CardHeader className="flex flex-col items-center justify-center">
-          {/* Logo Here */}
           <h1 className="text-3xl font-bold text-primary">Create an Account</h1>
           <p className="text-muted-foreground">Join the Community</p>
         </CardHeader>

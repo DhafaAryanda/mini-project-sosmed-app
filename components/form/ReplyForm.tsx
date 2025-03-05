@@ -5,20 +5,19 @@ import {
   FormItem,
   FormMessage,
 } from '@/components/ui/form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Send } from 'lucide-react'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { Button } from '../ui/button'
-import { Textarea } from '../ui/textarea'
-import { useRouter } from 'next/router'
 import { replyToPost } from '@/lib/api/replies'
 import {
   createReplyFormSchema,
   CreateReplyFormSchema,
 } from '@/schemas/posts/createReplyFormSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Send } from 'lucide-react'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
 
 export function ReplyForm({ mutate }: { mutate: () => void }) {
   const router = useRouter()
@@ -40,6 +39,7 @@ export function ReplyForm({ mutate }: { mutate: () => void }) {
       form.reset()
       await mutate()
     } catch (error) {
+      console.log('🚀 ~ onSubmit ~ error:', error)
       toast.error('Failed to create post')
     } finally {
       setLoading(false)

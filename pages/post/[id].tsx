@@ -14,14 +14,14 @@ export default function PostPage() {
 
   const {
     data: post,
-    error: postError,
+    // error: postError,
     isLoading: isPostLoading,
     mutate: mutatePost,
   } = useSWR(id ? `/post/${id}` : null, () => getPostById(Number(id)))
 
   const {
     data: replies,
-    error: repliesError,
+    // error: repliesError,
     isLoading: isRepliesLoading,
     mutate: mutateReplies,
   } = useSWR(id ? `/replies/post/${id}` : null, () =>

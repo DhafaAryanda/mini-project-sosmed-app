@@ -9,6 +9,6 @@ export const formatDate = (date: string) => {
   const diffInHours = now.diff(updatedAt, 'hour')
 
   return diffInHours >= 24
-    ? updatedAt.format('MMM D, YYYY') // Format: Apr 20, 2023
-    : updatedAt.fromNow() // Format: 22h, 3h, 10m, etc.
+    ? updatedAt.format('MMM D, YYYY')
+    : updatedAt.fromNow()
 }

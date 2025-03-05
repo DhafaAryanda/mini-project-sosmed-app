@@ -10,50 +10,27 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import axiosInstance from '@/lib/axiosInstance'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import Cookies from 'js-cookie'
+import { useLogin } from '@/hooks/useLogin'
 import {
   loginFormSchema,
   LoginFormSchema,
 } from '@/schemas/auth/loginFormSchema'
-import { login } from '@/lib/api/auth'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Eye, EyeOff } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const router = useRouter()
+  const { handleLogin, isLoading } = useLogin()
 
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
   })
 
   const onSubmit = async (data: LoginFormSchema) => {
-    if (isLoading) return
-    setIsLoading(true)
-
-    try {
-      const response = await login(data.email, data.password)
-      const token = response.token
-
-      const expiresAt = new Date(response.expires_at)
-      Cookies.set('token', token, { expires: expiresAt })
-      toast.success('Login Successful')
-      form.reset()
-      router.reload()
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      }
-    } finally {
-      setIsLoading(false)
-    }
+    await handleLogin(data.email, data.password, form.reset)
   }
 
   return (
@@ -119,12 +96,10 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
-
-          {/* Continue With google */}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <p className="text-[13px]">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="font-semibold text-blue-500">
               Register
             </Link>

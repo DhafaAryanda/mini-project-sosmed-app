@@ -43,7 +43,6 @@ export function ActionMenu({ onEdit, onDelete }: ActionMenuProps) {
           onSelect={(e) => e.preventDefault()}
           onClick={(e) => {
             e.stopPropagation()
-            // setIsEditing(true)
             onEdit()
             console.log('Edit Clicked')
           }}
@@ -86,7 +85,6 @@ export function ActionMenu({ onEdit, onDelete }: ActionMenuProps) {
                   onClick={(e) => {
                     e.stopPropagation()
                     console.log('Continue Clicked')
-                    // handleDelete()
                     onDelete()
                   }}
                 >

@@ -2,7 +2,6 @@ import { ContentContainer } from '@/components/layout/ContentContainer'
 import { Header } from '@/components/layout/Header'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { Sidebar } from '@/components/layout/Sidebar'
-import { Card } from '@/components/ui/card'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Head from 'next/head'
 

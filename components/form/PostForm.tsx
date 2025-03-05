@@ -37,6 +37,7 @@ export function PostForm({ mutate }: { mutate: () => void }) {
       form.reset()
       await mutate()
     } catch (error) {
+      console.log('🚀 ~ onSubmit ~ error:', error)
       toast.error('Failed to create post')
     } finally {
       setLoading(false)

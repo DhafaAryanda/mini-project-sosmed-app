@@ -1,8 +1,6 @@
 import { NotificationCard } from '@/components/notifications/NotificationCard'
 import { getAllNotifications } from '@/lib/api/notifications'
-import { Profile } from '@/schemas/profile/profileSchema'
 import { UserNotification } from '@/types/notification'
-import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 export default function NotificationsPage() {
@@ -23,7 +21,7 @@ export default function NotificationsPage() {
     <div className="w-full h-full flex flex-col gap-10">
       {notifications.length > 0 ? (
         notifications.map((notification: UserNotification) => (
-          <NotificationCard notification={notification} />
+          <NotificationCard key={notification.id} notification={notification} />
         ))
       ) : (
         <p className="text-center">No Notifications</p>

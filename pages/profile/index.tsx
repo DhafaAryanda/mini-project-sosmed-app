@@ -1,7 +1,5 @@
 import { ProfileCard } from '@/components/Profile/ProfileCard'
 import { getProfile } from '@/lib/api/profile'
-import { Profile } from '@/schemas/profile/profileSchema'
-import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 export default function ProfilePage() {

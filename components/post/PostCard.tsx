@@ -45,7 +45,6 @@ export function PostCard({ postData, mutate }: PostCardProps) {
         : postData.likes_count + 1,
     }
 
-    // Update UI secara langsung dengan pengecekan undefined
     mutate(
       (currentData) => {
         if (!currentData) return currentData
@@ -65,9 +64,8 @@ export function PostCard({ postData, mutate }: PostCardProps) {
         await likePost(postData.id)
         toast.success('Post liked successfully')
       }
-
-      // **Re-fetch data dari server untuk memastikan data tetap akurat**
     } catch (error) {
+      console.log('🚀 ~ handleLikeToggle ~ error:', error)
       toast.error('Failed to update like status')
 
       mutate(
@@ -87,7 +85,6 @@ export function PostCard({ postData, mutate }: PostCardProps) {
     const prevPostData = { ...postData }
     const optimisticData = { ...postData, description }
 
-    // Update UI secara langsung
     mutate(
       (currentData) => {
         if (!currentData) return currentData
@@ -102,6 +99,7 @@ export function PostCard({ postData, mutate }: PostCardProps) {
       await updatePost(postData.id, description)
       toast.success('Post updated successfully')
     } catch (error) {
+      console.log('🚀 ~ handleSave ~ error:', error)
       toast.error('Failed to update post')
       mutate(
         (currentData) => {

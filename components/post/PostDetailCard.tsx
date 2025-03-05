@@ -58,6 +58,7 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
         toast.success('Post liked successfully')
       }
     } catch (error) {
+      console.log('🚀 ~ handleLikeToggle ~ error:', error)
       toast.error('Failed to update like status')
 
       mutate(
@@ -78,9 +79,6 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
 
   const handleSave = async (description: string) => {
     setIsEditing(false)
-    const prevPostData = { ...postData }
-    const optimisticData = { ...postData, description }
-
     mutate(
       (currentData) => {
         if (!currentData) return currentData
@@ -93,6 +91,7 @@ export function PostDetailCard({ postData, mutate }: PostDetailCardProps) {
       await updatePost(postData.id, description)
       toast.success('Post updated successfully')
     } catch (error) {
+      console.log('🚀 ~ handleSave ~ error:', error)
       toast.error('Failed to update post')
       mutate(
         (currentData) => {

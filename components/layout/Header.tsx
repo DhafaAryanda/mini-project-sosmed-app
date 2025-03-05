@@ -60,6 +60,7 @@ export const Header = ({ showAvatar = true }: HeaderProps) => {
                 }}
               >
                 <Avatar>
+                  <AvatarImage src="https://api.dicebear.com/9.x/glass/svg?seed=Liliana" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Button>
