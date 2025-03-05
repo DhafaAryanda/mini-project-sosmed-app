@@ -23,6 +23,7 @@ import {
   loginFormSchema,
   LoginFormSchema,
 } from '@/schemas/auth/loginFormSchema'
+import { login } from '@/lib/api/auth'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
@@ -34,21 +35,22 @@ export default function LoginPage() {
   })
 
   const onSubmit = async (data: LoginFormSchema) => {
+    if (isLoading) return
     setIsLoading(true)
 
     try {
-      const response = await axiosInstance.post('/login', data)
-      const token = response.data.data.token
-      const expiresAt = new Date(response.data.data.expires_at)
-      console.log('🚀 ~ onSubmit ~ expiresAt:', expiresAt)
-      Cookies.set('token', token, { expires: expiresAt })
+      const response = await login(data.email, data.password)
+      const token = response.token
 
+      const expiresAt = new Date(response.expires_at)
+      Cookies.set('token', token, { expires: expiresAt })
       toast.success('Login Successful')
       form.reset()
       router.reload()
     } catch (error) {
-      console.log('🚀 ~ onSubmit ~ error:', error)
-      toast.error('Login Failed')
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     } finally {
       setIsLoading(false)
     }

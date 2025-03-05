@@ -6,7 +6,6 @@ export const getProfile = async () => {
     const response = await axiosInstance.get('/user/me')
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }

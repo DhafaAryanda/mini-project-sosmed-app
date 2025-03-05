@@ -6,8 +6,7 @@ export const getRepliesByPostId = async (id: number) => {
     const response = await axiosInstance.get(`/replies/post/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -18,8 +17,7 @@ export const replyToPost = async (postId: number, description: string) => {
     })
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -28,7 +26,6 @@ export const deleteReply = async (id: number) => {
     const response = await axiosInstance.delete(`/replies/delete/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }

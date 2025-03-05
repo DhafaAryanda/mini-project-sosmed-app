@@ -10,8 +10,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import axiosInstance from '@/lib/axiosInstance'
+import { register } from '@/lib/api/auth'
 import {
   registerFormSchema,
   RegisterFormSchema,
@@ -32,27 +31,27 @@ export default function RegisterPage() {
 
   const form = useForm<RegisterFormSchema>({
     resolver: zodResolver(registerFormSchema),
+    mode: 'onBlur',
   })
 
   const onSubmit = async (data: RegisterFormSchema) => {
+    if (isLoading) return
     setIsLoading(true)
 
     try {
-      console.log('🚀 ~ onSubmit ~ data:', data)
-
-      await axiosInstance.post('/register', data)
-      toast.success('Login Successful')
-
+      const response = await register(data)
+      toast.success('Account Created Successfully')
       form.reset()
-
       router.push('/login')
     } catch (error) {
-      console.log('🚀 ~ onSubmit ~ error:', error)
-      toast.error('Login Failed')
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     } finally {
       setIsLoading(false)
     }
   }
+
   return (
     <div className="w-full h-full  flex items-center justify-center ">
       <Card className="w-1/4">
@@ -171,11 +170,11 @@ export default function RegisterPage() {
                 )}
               />
 
-              <Button className="mt-4 w-full">Create Account</Button>
+              <Button className="mt-4 w-full" disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Create Account'}
+              </Button>
             </form>
           </Form>
-
-          {/* Continue With google */}
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           <p className="text-[13px]">

@@ -6,8 +6,7 @@ export const getAllPosts = async () => {
     const response = await axiosInstance.get('/posts')
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return []
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -16,8 +15,7 @@ export const getPostById = async (id: number) => {
     const response = await axiosInstance.get(`/post/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -26,8 +24,7 @@ export const createPost = async (description: string) => {
     const response = await axiosInstance.post('/post', { description })
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -38,8 +35,7 @@ export const updatePost = async (id: number, description: string) => {
     })
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -48,8 +44,7 @@ export const deletePost = async (id: number) => {
     const response = await axiosInstance.delete(`/post/delete/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -58,8 +53,7 @@ export const likePost = async (id: number) => {
     const response = await axiosInstance.post(`/likes/post/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
 
@@ -68,7 +62,6 @@ export const unlikePost = async (id: number) => {
     const response = await axiosInstance.post(`/unlikes/post/${id}`)
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }

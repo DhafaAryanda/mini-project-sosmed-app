@@ -6,7 +6,6 @@ export const getAllNotifications = async () => {
     const response = await axiosInstance.get('/notifications')
     return response.data.data
   } catch (error) {
-    handleApiError(error)
-    return null
+    throw new Error(handleApiError(error))
   }
 }
