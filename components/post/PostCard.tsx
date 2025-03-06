@@ -150,18 +150,18 @@ export function PostCard({ postData, mutate }: PostCardProps) {
       </Avatar>
 
       <div className="w-full flex flex-col gap-4 px-2 ">
-        <CardHeader className="flex flex-row gap-2 p-0 ">
-          <CardTitle className="flex gap-2 items-center">
+        <CardHeader className="flex flex-col md:flex-row gap-2 p-0 ">
+          <CardTitle className="flex gap-1 items-center text-sm md:text-base">
             {postData.user.name}
             {postData.is_own_post && (
-              <span className="text-sm dark:text-zinc-300 text-zinc-600">
+              <span className="text-xs md:text-base dark:text-zinc-300 text-zinc-600">
                 (You)
               </span>
             )}
           </CardTitle>
-          <CardDescription className="flex flex-row items-center gap-2">
+          <CardDescription className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 ">
             <p className="text-sm">{postData.user.email}</p>
-            <span>·</span>
+            <span className="hidden md:block">·</span>
             <p className="text-xs">{formatDate(postData.updated_at)}</p>
           </CardDescription>
           {postData.created_at !== postData.updated_at && (
@@ -181,7 +181,7 @@ export function PostCard({ postData, mutate }: PostCardProps) {
               autoFocus
             />
           ) : (
-            <p>
+            <p className="text-sm md:text-base">
               {postData.description.length > 100
                 ? postData.description.slice(0, 600) + '...'
                 : postData.description}

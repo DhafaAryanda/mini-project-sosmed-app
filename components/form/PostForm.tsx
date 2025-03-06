@@ -59,7 +59,7 @@ export function PostForm({ mutate }: { mutate: () => void }) {
                 <FormControl>
                   <Textarea
                     placeholder="What's on your mind?"
-                    className="resize-none rounded-none "
+                    className="resize-none rounded-none text-sm md:text-base "
                     {...field}
                   />
                 </FormControl>
@@ -70,7 +70,7 @@ export function PostForm({ mutate }: { mutate: () => void }) {
             )}
           />
         </div>
-        <div className="w-fit flex justify-center items-center absolute bottom-5 -right-16">
+        <div className="w-fit flex justify-center items-center absolute bottom-5 right-2 md:-right-16">
           <Button
             className="rounded-full flex items-center justify-center p-2"
             type="submit"

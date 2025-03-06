@@ -37,10 +37,14 @@ export default function RegisterPage() {
 
   return (
     <div className="w-full h-full  flex items-center justify-center ">
-      <Card className="w-1/4">
+      <Card className="w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-1/4">
         <CardHeader className="flex flex-col items-center justify-center">
-          <h1 className="text-3xl font-bold text-primary">Create an Account</h1>
-          <p className="text-muted-foreground">Join the Community</p>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">
+            Create an Account
+          </h1>
+          <p className="text-muted-foreground text-sm md:text-base">
+            Join the Community
+          </p>
         </CardHeader>
         <CardContent>
           <Form {...form}>

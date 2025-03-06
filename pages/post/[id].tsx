@@ -33,7 +33,7 @@ export default function PostPage() {
   return (
     <>
       <div className="w-full h-full flex flex-col items-center gap-10  ">
-        <div className="w-3/4 flex flex-col">
+        <div className="w-full md:w-3/4 flex flex-col">
           {isPostLoading ? (
             <p className="text-center text-gray-500">Loading post...</p>
           ) : post ? (

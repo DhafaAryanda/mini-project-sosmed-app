@@ -33,7 +33,7 @@ export default function RootLayout({
 
       {/* Layout untuk home */}
       <div
-        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen `}
+        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen  `}
       >
         <Header />
 

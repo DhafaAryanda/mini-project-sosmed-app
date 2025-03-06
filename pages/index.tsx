@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <>
       <div className="w-full h-full flex flex-col items-center   ">
-        <div className="w-3/4 flex flex-col gap-2">
+        <div className="w-full md:w-3/4  flex flex-col md:gap-2">
           <PostForm mutate={mutate} />
 
           {posts.length > 0 ? (
