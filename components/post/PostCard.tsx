@@ -29,55 +29,53 @@ type PostCardProps = {
 export function PostCard({ postData, mutate }: PostCardProps) {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
-  const [editedDescription, setEditedDescription] = useState(
-    postData.description,
-  )
+  const [editedDescription, setEditedDescription] = useState(postData.content)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const handleLikeToggle = async () => {
     const prevPostData = { ...postData }
 
-    const optimisticData = {
-      ...postData,
-      is_like_post: !postData.is_like_post,
-      likes_count: postData.is_like_post
-        ? postData.likes_count - 1
-        : postData.likes_count + 1,
-    }
+    // const optimisticData = {
+    //   ...postData,
+    //   is_like_post: !postData.is_like_post,
+    //   likes_count: postData.is_like_post
+    //     ? postData.likes_count - 1
+    //     : postData.likes_count + 1,
+    // }
 
-    mutate(
-      (currentData) => {
-        if (!currentData) return currentData
+    // mutate(
+    //   (currentData) => {
+    //     if (!currentData) return currentData
 
-        return currentData?.map((post) =>
-          post.id === postData.id ? optimisticData : post,
-        )
-      },
-      { revalidate: false },
-    )
+    //     return currentData?.map((post) =>
+    //       post.id === postData.id ? optimisticData : post,
+    //     )
+    //   },
+    //   { revalidate: false },
+    // )
 
-    try {
-      if (postData.is_like_post) {
-        await unlikePost(postData.id)
-        toast.success('Post unliked successfully')
-      } else {
-        await likePost(postData.id)
-        toast.success('Post liked successfully')
-      }
-    } catch (error) {
-      console.log('🚀 ~ handleLikeToggle ~ error:', error)
-      toast.error('Failed to update like status')
+    // try {
+    //   if (postData.is_like_post) {
+    //     await unlikePost(postData.id)
+    //     toast.success('Post unliked successfully')
+    //   } else {
+    //     await likePost(postData.id)
+    //     toast.success('Post liked successfully')
+    //   }
+    // } catch (error) {
+    //   console.log('🚀 ~ handleLikeToggle ~ error:', error)
+    //   toast.error('Failed to update like status')
 
-      mutate(
-        (currentData) => {
-          if (!currentData) return currentData
-          return currentData.map((post) =>
-            post.id === postData.id ? prevPostData : post,
-          )
-        },
-        { revalidate: false },
-      )
-    }
+    //   mutate(
+    //     (currentData) => {
+    //       if (!currentData) return currentData
+    //       return currentData.map((post) =>
+    //         post.id === postData.id ? prevPostData : post,
+    //       )
+    //     },
+    //     { revalidate: false },
+    //   )
+    // }
   }
 
   const handleSave = async (description: string) => {
@@ -145,22 +143,23 @@ export function PostCard({ postData, mutate }: PostCardProps) {
     >
       <Avatar className="w-10 h-10">
         <AvatarFallback>
-          {postData.user.name.charAt(0).toUpperCase()}
+          {postData.author.name.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>
 
       <div className="w-full flex flex-col gap-4 px-2 ">
         <CardHeader className="flex flex-col md:flex-row gap-2 p-0 ">
           <CardTitle className="flex gap-1 items-center text-sm md:text-base">
-            {postData.user.name}
-            {postData.is_own_post && (
+            {postData.author.name}
+
+            {/* {postData.is_own_post && (
               <span className="text-xs md:text-base dark:text-zinc-300 text-zinc-600">
                 (You)
               </span>
-            )}
+            )} */}
           </CardTitle>
           <CardDescription className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 ">
-            <p className="text-sm">{postData.user.email}</p>
+            {/* <p className="text-sm">{postData.user.email}</p> */}
             <span className="hidden md:block">·</span>
             <p className="text-xs">{formatDate(postData.updated_at)}</p>
           </CardDescription>
@@ -182,9 +181,9 @@ export function PostCard({ postData, mutate }: PostCardProps) {
             />
           ) : (
             <p className="text-sm md:text-base">
-              {postData.description.length > 100
-                ? postData.description.slice(0, 600) + '...'
-                : postData.description}
+              {postData.content.length > 100
+                ? postData.content.slice(0, 600) + '...'
+                : postData.content}
             </p>
           )}
         </CardContent>
@@ -203,13 +202,13 @@ export function PostCard({ postData, mutate }: PostCardProps) {
               <span>{postData.replies_count}</span>
             </Button>
 
-            <LikeButton
+            {/* <LikeButton
               isLiked={postData.is_like_post}
               likesCount={postData.likes_count}
               onToggleLike={handleLikeToggle}
-            />
+            /> */}
           </div>
-          {postData.is_own_post && (
+          {/* {postData.is_own_post && (
             <div className="flex w-1/2 justify-end">
               {isEditing ? (
                 <div className="flex gap-2">
@@ -239,7 +238,7 @@ export function PostCard({ postData, mutate }: PostCardProps) {
                 />
               )}
             </div>
-          )}
+          )} */}
         </CardFooter>
       </div>
     </Card>

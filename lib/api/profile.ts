@@ -3,7 +3,7 @@ import { handleApiError } from '@/lib/errorHandler'
 
 export const getProfile = async () => {
   try {
-    const response = await axiosInstance.get('/user/me')
+    const response = await axiosInstance.get('/users/me')
     return response.data.data
   } catch (error) {
     throw new Error(handleApiError(error))

@@ -30,7 +30,7 @@ export default function LoginPage() {
   })
 
   const onSubmit = async (data: LoginFormSchema) => {
-    await handleLogin(data.email, data.password, form.reset)
+    await handleLogin(data.username, data.password, form.reset)
   }
 
   return (
@@ -51,12 +51,12 @@ export default function LoginPage() {
               className="flex flex-col gap-y-1"
             >
               <FormField
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} />
+                      <Input type="username" {...field} />
                     </FormControl>
                     <FormDescription />
                     <FormMessage />

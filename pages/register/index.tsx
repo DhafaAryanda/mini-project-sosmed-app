@@ -79,10 +79,36 @@ export default function RegisterPage() {
                 )}
               />
               <FormField
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                    <FormDescription />
+                  </FormItem>
+                )}
+              />
+              <FormField
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input type="text" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                    <FormDescription />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="hobby"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hobby</FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
@@ -102,20 +128,6 @@ export default function RegisterPage() {
                         className="w-full flex justify-between"
                         {...field}
                       />
-                    </FormControl>
-                    <FormMessage className="text-xs" />
-                    <FormDescription />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                name="hobby"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hobby</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
                     <FormDescription />

@@ -8,8 +8,12 @@ export const registerFormSchema = z.object({
   phone: z.string().min(10).max(15).optional(),
   dob: z.string().optional(),
   hobby: z.string().min(3).max(100).optional(),
+  username: z
+    .string({ message: 'Username wajib diisi' })
+    .min(3, { message: 'Username minimal 3 karakter' })
+    .max(50),
   email: z.string({ message: 'email wajib diisi' }).email(),
-  password: z.string({ message: 'password wajib diisi' }).min(5),
+  password: z.string({ message: 'password wajib diisi' }).min(8),
 })
 
 export type RegisterFormSchema = z.infer<typeof registerFormSchema>
